@@ -1,0 +1,1210 @@
+/* pure-black-soft —— OLED 纯黑 + 文字压一档
+ * 主文字 #b2b8be，对纯黑 10.49:1（night 原版 11.31:1）
+ * 唯一可调变量：--text-color。改回 #b8bfc6 即等于 pure-black。
+ * 两版共享全部缺陷修复，并 @import "pdf-white.css"，
+ * 导出 PDF 会自动转白底黑字，不需要手动切主题。
+ * 生成脚本：build_themes.py（改配色请改脚本重跑，不要手改本文件）
+ */
+
+@import "night/mermaid.dark.css";
+@import "night/codeblock.dark.css";
+@import "night/sourcemode.dark.css";
+@import "pdf-white.css";
+
+:root {
+    --bg-color:  #000000;
+    --side-bar-bg-color: #0a0a0a;
+    --text-color: #b2b8be;
+
+    --select-text-bg-color: #2b4a6b;
+
+    --item-hover-bg-color: #0a0d16;
+    --control-text-color: #adb1b5;
+    --control-text-hover-color: #eee;
+    --window-border: 1px solid #242424;
+
+    --active-file-bg-color: rgb(15, 15, 15);
+    --active-file-border-color: #8d8df0;
+
+    --primary-color: #9cc4e8;
+
+    --active-file-text-color: white;
+    --item-hover-bg-color: #1f1f1f;
+    --item-hover-text-color: white;
+    --primary-color: #68b6d6;
+
+    --rawblock-edit-panel-bd: #0f0f0f;
+
+    --search-select-bg-color: #2f5d8a;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    background: #000000;
+    background: var(--bg-color);
+    fill: currentColor;
+    line-height: 1.625rem;
+}
+
+#write {
+    max-width: 914px;
+}
+
+
+@media only screen and (min-width: 1400px) {
+	#write {
+		max-width: 1024px;
+	}
+}
+
+@media only screen and (min-width: 1800px) {
+	#write {
+		max-width: 1200px;
+	}
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea,
+div.code-tooltip-content {
+    color: #b2b8be;
+    border-color: transparent;
+}
+
+div.code-tooltip,
+.md-hover-tip .md-arrow:after {
+    background: #0f0f0f;
+}
+
+.native-window #md-notification {
+    border: 1px solid #1f1f1f;
+}
+
+.popover.bottom > .arrow:after {
+    border-bottom-color: #0f0f0f;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+    font-family: "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', 'SF Pro',  sans-serif;
+}
+
+hr {
+    height: 2px;
+    border: 0;
+    margin: 24px 0 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Lucida Grande", "Corbel", sans-serif;
+    font-weight: normal;
+    clear: both;
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+    margin: 0;
+    padding: 0;
+    color: #d6dade
+}
+
+h1 {
+    font-size: 2.5rem;
+    /* 36px */
+    line-height: 2.75rem;
+    /* 40px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    letter-spacing: -1.5px;
+}
+
+h2 {
+    font-size: 1.63rem;
+    /* 24px */
+    line-height: 1.875rem;
+    /* 30px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    letter-spacing: -1px;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 1.17rem;
+    /* 18px */
+    line-height: 1.5rem;
+    /* 24px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    letter-spacing: -1px;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 1.12rem;
+    /* 16px */
+    line-height: 1.375rem;
+    /* 22px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    color: #d6dade;
+}
+
+h5 {
+    font-size: 0.97rem;
+    /* 16px */
+    line-height: 1.25rem;
+    /* 22px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    font-weight: bold;
+}
+
+h6 {
+    font-size: 0.93rem;
+    /* 16px */
+    line-height: 1rem;
+    /* 16px */
+    margin-bottom: 0.75rem;
+    color: #d6dade;
+}
+
+@media (min-width: 980px) {
+    h3.md-focus:before,
+    h4.md-focus:before,
+    h5.md-focus:before,
+    h6.md-focus:before {
+        color: #ddd;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        position: absolute;
+        left: -1.642857143rem;
+        top: .357142857rem;
+        float: left;
+        font-size: 9px;
+        padding-left: 2px;
+        padding-right: 2px;
+        vertical-align: bottom;
+        font-weight: normal;
+        line-height: normal;
+    }
+
+    h3.md-focus:before {
+        content: 'h3';
+    }
+
+    h4.md-focus:before {
+        content: 'h4';
+    }
+
+    h5.md-focus:before {
+        content: 'h5';
+        top: 0px;
+    }
+
+    h6.md-focus:before {
+        content: 'h6';
+        top: 0px;
+    }
+}
+
+a {
+    text-decoration: none;
+    outline: 0;
+}
+
+a:hover {
+    outline: 0;
+}
+
+a:focus {
+    outline: thin dotted;
+}
+
+sup.md-footnote {
+    background-color: #242424;
+    color: #ddd;
+}
+
+p {
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+}
+
+p,
+ul,
+dd,
+ol,
+hr,
+address,
+pre,
+table,
+iframe,
+.wp-caption,
+.wp-audio-shortcode,
+.wp-video-shortcode {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    /* 24px */
+}
+
+audio:not([controls]) {
+    display: none;
+}
+
+[hidden] {
+    display: none;
+}
+
+::-moz-selection {
+    background: #2b4a6b;
+    color: #fff;
+    text-shadow: none;
+}
+
+*.in-text-selection,
+::selection {
+    background: #2b4a6b;
+    color: #fff;
+    text-shadow: none;
+}
+
+ul,
+ol {
+    padding: 0 0 0 1.875rem;
+    /* 30px */
+}
+
+ol {
+    list-style: decimal;
+}
+
+ul ul,
+ol ol,
+ul ol,
+ol ul {
+    margin: 0;
+}
+
+b,
+th,
+dt,
+strong {
+    font-weight: bold;
+}
+
+i,
+em,
+dfn,
+cite {
+    font-style: italic;
+}
+
+blockquote {
+    padding-left: 1.875rem;
+    margin: 0 0 1.875rem 1.875rem;
+    border-left: solid 2px #2a2a2a;
+    padding-left: 30px;
+    margin-top: 35px;
+}
+
+pre,
+code,
+kbd,
+tt,
+var {
+    font-size: 0.875em;
+    font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+}
+
+code,
+tt,
+var {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+kbd {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #fff;
+    background-color: #0f0f0f;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,.25);
+}
+
+pre.md-fences {
+    padding: 10px 10px 10px 30px;
+    margin-bottom: 20px;
+    background: #0f0f0f;
+}
+
+.CodeMirror-gutters {
+    background: #0f0f0f;
+    border-right: 1px solid transparent;
+}
+
+.enable-diagrams pre.md-fences[lang="sequence"] .code-tooltip,
+.enable-diagrams pre.md-fences[lang="flow"] .code-tooltip,
+.enable-diagrams pre.md-fences[lang="mermaid"] .code-tooltip {
+    bottom: -2.2em;
+    right: 4px;
+}
+
+code,
+kbd,
+tt,
+var {
+    padding: 2px 5px;
+}
+
+table {
+    max-width: 100%;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+th,
+td {
+    padding: 5px 10px;
+    vertical-align: top;
+}
+
+a {
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+hr {
+    background: #1f1f1f;
+    /* variable */
+}
+
+h1 {
+    margin-top: 2em;
+}
+
+a {
+    color: #d2d8de;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #fff;
+}
+
+.md-inline-math script {
+    color: #8cabd0;
+}
+
+b,
+th,
+dt,
+strong {
+    color: #d6dade;
+    /* variable */
+}
+
+mark {
+    background: #c8c90f;
+    color: #0f0f0f;   /* 黄底必须配深字，night 原主题缺这一条 */
+}
+
+blockquote {
+    color: #9ca1a6;
+}
+
+table a {
+    color: #d6dade;
+    /* variable */
+}
+
+th,
+td {
+    border: solid 1px #2a2a2a;
+    /* variable */
+}
+
+.task-list {
+    padding-left: 0;
+}
+
+.md-task-list-item {
+    padding-left: 1.25rem;
+}
+
+.md-task-list-item > input {
+    top: auto;
+}
+
+.md-task-list-item > input:before {
+    content: "";
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid #b2b8be;
+    background-color: #000000;
+    margin-top: -0.4rem;
+}
+
+.md-task-list-item > input:checked:before,
+.md-task-list-item > input[checked]:before {
+    content: '\221A';
+    /*◘*/
+    font-size: 0.625rem;
+    line-height: 0.625rem;
+    color: #d6dade;
+}
+
+/** quick open **/
+.auto-suggest-container {
+    border: 0px;
+    background-color: #2a2a2a;
+}
+
+#typora-quick-open {
+    background-color: #2a2a2a;
+}
+
+#typora-quick-open input{
+    background-color: #2a2a2a;
+    border: 0;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.typora-quick-open-item {
+    background-color: inherit;
+    color: inherit;
+}
+
+.typora-quick-open-item.active,
+.typora-quick-open-item:hover {
+    background-color: #2b4a6b;
+    color: white;
+}
+
+.typora-quick-open-item:hover {
+    background-color: rgba(70, 126, 200, 0.6);
+}
+
+.typora-search-spinner > div {
+  background-color: #fff;
+}
+
+#write pre.md-meta-block {
+    border-bottom: 1px dashed #ccc;
+    background: transparent;
+    padding-bottom: 0.6em;
+    line-height: 1.6em;
+}
+
+.btn,
+.btn .btn-default {
+    background: transparent;
+    color: #b2b8be;
+}
+
+.ty-table-edit {
+    border-top: 1px solid #2a2a2a;
+    background-color: #000000;
+}
+
+.popover-title {
+    background: transparent;
+}
+
+.md-image>.md-meta {
+    color: #a5a9ad;
+    background: transparent;
+}
+
+.md-expand.md-image>.md-meta {
+    color: #DDD;
+}
+
+#write>h3:before,
+#write>h4:before,
+#write>h5:before,
+#write>h6:before {
+    border: none;
+    border-radius: 0px;
+    color: #757575;
+    text-decoration: underline;
+    left: -1.4rem;
+    top: 0.2rem;
+}
+
+#write>h3.md-focus:before {
+    top: 2px;
+}
+
+#write>h4.md-focus:before {
+    top: 2px;
+}
+
+.md-toc-item {
+    color: #a6bcd2;
+}
+
+#write div.md-toc-tooltip {
+    background-color: #000000;
+}
+
+.dropdown-menu .btn:hover,
+.dropdown-menu .btn:focus,
+.md-toc .btn:hover,
+.md-toc .btn:focus {
+    color: white;
+    background: black;
+}
+
+#toc-dropmenu {
+    background: rgba(0, 0, 0, 0.93);
+    border: 1px solid rgba(253, 253, 253, 0.15);
+}
+
+#toc-dropmenu .divider {
+    background-color: #2a2a2a;
+}
+
+.outline-expander:before {
+    top: 2px;
+}
+
+#typora-sidebar {
+    box-shadow: none;
+    border-right: 1px dashed;
+    border-right: none;
+}
+
+.sidebar-tabs {
+    border-bottom:0;
+}
+
+#typora-sidebar:hover .outline-title-wrapper {
+    border-left: 1px dashed;
+}
+
+.outline-title-wrapper .btn {
+    color: inherit;
+}
+
+.outline-item:hover {
+    border-color: #000000;
+    background-color: #000000;
+    color: white;
+}
+
+h1.md-focus .md-attr,
+h2.md-focus .md-attr,
+h3.md-focus .md-attr,
+h4.md-focus .md-attr,
+h5.md-focus .md-attr,
+h6.md-focus .md-attr,
+.md-header-span .md-attr {
+    color: #8e9296;
+    display: inline;
+}
+
+.md-comment {
+    color: #639ce8;
+    opacity: 0.8;
+}
+
+.md-inline-math svg {
+    color: #b2b8be;
+}
+
+#math-inline-preview .md-arrow:after {
+    background: black;
+}
+
+.modal-content {
+    background: var(--bg-color);
+    border: 0;
+}
+
+.modal-title {
+    font-size: 1.5em;
+}
+
+.modal-content input {
+    background-color: rgba(0, 0, 0, 0.51);
+    color: white;
+}
+
+.modal-content .input-group-addon {
+    color: white;
+}
+
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content .btn-primary {
+    border-color: var(--primary-color);
+}
+
+.md-table-resize-popover {
+    background-color: #0f0f0f;
+}
+
+.form-inline .input-group .input-group-addon {
+    color: white;
+}
+
+#md-searchpanel {
+    border-bottom: 1px dashed #2a2a2a;
+}
+
+/** UI for electron */
+
+.context-menu,
+#spell-check-panel,
+#footer-word-count-info {
+    background-color: #1a1a1a;
+}
+
+.context-menu.dropdown-menu .divider,
+.dropdown-menu .divider {
+    background-color: #333333;
+    opacity: 1;
+}
+
+footer {
+    color: inherit;
+}
+
+@media (max-width: 1000px) {
+    footer {
+        border-top: none;
+    }
+    footer:hover {
+        color: inherit;
+    }
+}
+
+#file-info-file-path .file-info-field-value:hover {
+    background-color: #242424;
+    color: #d6dade;
+}
+
+.megamenu-content,
+.megamenu-opened header {
+    background: var(--bg-color);
+}
+
+.megamenu-menu-panel h2,
+.megamenu-menu-panel h1,
+.long-btn {
+    color: inherit;
+}
+
+.megamenu-menu-panel input[type='text'] {
+    background: inherit;
+    border: 0;
+    border-bottom: 1px solid;
+}
+
+#recent-file-panel-action-btn {
+    background: inherit;
+    border: 1px solid #2a2a2a;
+}
+
+.megamenu-menu-panel .dropdown-menu > li > a {
+    color: inherit;
+    background-color: #0a0a0a;
+    text-decoration: none;
+}
+
+.megamenu-menu-panel table td:nth-child(1) {
+    color: inherit;
+    font-weight: bold;
+}
+
+.megamenu-menu-panel tbody tr:hover td:nth-child(1) {
+    color: white;
+}
+
+.modal-footer .btn-default, 
+.modal-footer .btn-primary,
+.modal-footer .btn-default:not(:hover) {
+    border: 1px solid;
+    border-color: transparent;
+}
+
+.btn-primary {
+    color: white;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default.focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+    color: white;
+    border: 1px solid #ddd;
+    background-color: inherit;
+}
+
+.modal-header {
+    border-bottom: 0;
+}
+
+.modal-footer {
+    border-top: 0;
+}
+
+#recent-file-panel tbody tr:nth-child(2n-1) {
+    background-color: transparent !important;
+}
+
+.megamenu-menu-panel tbody tr:hover td:nth-child(2) {
+    color: inherit;
+}
+
+.megamenu-menu-panel .btn {
+    border: 1px solid #eee;
+    background: transparent;
+}
+
+.mouse-hover .toolbar-icon.btn:hover,
+#w-full.mouse-hover,
+#w-pin.mouse-hover {
+    background-color: inherit;
+}
+
+.typora-node::-webkit-scrollbar {
+    width: 5px;
+}
+
+.typora-node::-webkit-scrollbar-thumb:vertical {
+    background: rgba(195, 200, 205, 0.20);
+}
+
+.typora-node::-webkit-scrollbar-thumb:vertical:active {
+    background: rgba(195, 200, 205, 0.32);
+}
+
+#w-unpin {
+    background-color: #2b4a6b;
+}
+
+#top-titlebar, #top-titlebar * {
+    color: var(--item-hover-text-color);
+}
+
+.typora-sourceview-on #toggle-sourceview-btn,
+#footer-word-count:hover,
+.ty-show-word-count #footer-word-count {
+    background: #0f0f0f;
+}
+
+#toggle-sourceview-btn:hover {
+    color: #eee;
+    background: #0f0f0f;
+}
+
+/** focus mode */
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) * {
+    color: #2a2a2a !important;
+}
+
+.on-focus-mode .md-end-block:not(.md-focus) img,
+.on-focus-mode .md-task-list-item:not(.md-focus-container)>input {
+    opacity: #2a2a2a !important;
+}
+
+.on-focus-mode li[cid]:not(.md-focus-container){
+    color: #2a2a2a;
+}
+
+.on-focus-mode .md-fences.md-focus .CodeMirror-code>*:not(.CodeMirror-activeline) *,
+.on-focus-mode .CodeMirror.cm-s-inner:not(.CodeMirror-focused) * {
+    color: #2a2a2a !important;
+}
+
+.on-focus-mode .md-focus,
+.on-focus-mode .md-focus-container {
+    color: #fff;
+}
+
+.on-focus-mode #typora-source .CodeMirror-code>*:not(.CodeMirror-activeline) * {
+    color: #2a2a2a !important;
+}
+
+
+/*diagrams*/
+#write .md-focus .md-diagram-panel {
+    border: 1px solid #ddd;
+    margin-left: -1px;
+    width: calc(100% + 2px);
+}
+
+/*diagrams*/
+#write .md-focus.md-fences-with-lineno .md-diagram-panel {
+    margin-left: auto;
+}
+
+.md-diagram-panel-error {
+    color: #e58886;
+}
+
+.active-tab-files #info-panel-tab-file,
+.active-tab-files #info-panel-tab-file:hover,
+.active-tab-outline #info-panel-tab-outline,
+.active-tab-outline #info-panel-tab-outline:hover {
+    color: #eee;
+}
+
+.sidebar-footer-item:hover,
+.footer-item:hover {
+    background: inherit;
+    color: white;
+}
+
+.ty-side-sort-btn.active,
+.ty-side-sort-btn:hover,
+.selected-folder-menu-item a:after {
+    color: white;
+}
+
+#sidebar-files-menu {
+    border:solid 1px;
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.79);
+    background-color: var(--bg-color);
+}
+
+.file-list-item {
+    border-bottom:none;
+}
+
+.file-list-item-summary {
+    opacity: 1;
+}
+
+.file-list-item.active:first-child {
+    border-top: none;
+}
+
+.file-node-background {
+    height: 32px;
+}
+
+.file-library-node.active>.file-node-content,
+.file-list-item.active {
+    color: white;
+    color: var(--active-file-text-color);
+}
+
+.file-library-node.active>.file-node-background{
+    background-color: rgb(15, 15, 15);
+    background-color: var(--active-file-bg-color);
+}
+.file-list-item.active {
+    background-color: rgb(15, 15, 15);
+    background-color: var(--active-file-bg-color);
+}
+
+#ty-tooltip {
+    background-color: black;
+    color: #eee;
+}
+
+.md-task-list-item>input {
+    margin-left: -1.3em;
+    margin-top: 0.3rem;
+    -webkit-appearance: none;
+}
+
+.md-mathjax-midline {
+    background-color: #2e2e2e;
+    border-bottom: none;
+}
+
+footer.ty-footer {
+    border-color: #2a2a2a;
+}
+
+.ty-preferences .btn-default {
+    background: transparent;
+}
+.ty-preferences .btn-default:hover {
+    background: #2e2e2e;
+}
+
+.ty-preferences select {
+    border: 1px solid #989698;
+    height: 21px;
+}
+
+.ty-preferences .nav-group-item.active,
+.export-item.active,
+.export-items-list-control,
+.export-detail {
+    background: var(--item-hover-bg-color);
+}
+
+.ty-preferences input[type="search"] {
+    border-color: #0f0f0f;
+    background: #0f0f0f;
+    line-height: 22px;
+    border-radius: 6px;
+    color: white;
+}
+
+.ty-preferences input[type="search"]:focus {
+    box-shadow: none;
+}
+
+[data-is-directory="true"] .file-node-content {
+    margin-bottom: 0;
+}
+
+.file-node-title {
+    line-height: 22px;
+}
+
+.html-for-mac .file-node-open-state, .html-for-mac .file-node-icon {
+    line-height: 26px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(195, 200, 205, 0.20);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: rgba(195, 200, 205, 0.32);
+}
+
+#typora-sidebar:hover div.sidebar-content-content::-webkit-scrollbar-thumb:horizontal {
+    background: rgba(195, 200, 205, 0.20);
+}
+
+.nav-group-item:active {
+    background-color: #1f1f1f !important;
+}
+
+.md-search-hit {
+    background: rgba(165, 115, 48, 0.62);
+    color: #eee;
+}
+
+.md-search-hit * {
+    color: #eee;
+}
+
+#md-searchpanel input {
+    color: white;
+}
+
+.modal-backdrop.in {
+    opacity: 1;
+    backdrop-filter: blur(1px);
+}
+
+.clear-btn-icon {
+    top: 8px;
+}
+
+.ty-editor-toolbar {
+    background: #0a0a0a;
+    border: 1px solid rgb(127 127 127 / 50%);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 30%));
+    --text-color: #bccddc;
+}
+
+/* try fix https://github.com/typora/typora-issues/issues/5253 */
+.file-node-expanded>.file-node-children {
+    display: grid;
+  }
+
+.md-alert-text-note {
+    color: rgb(47, 129, 247);
+}
+.md-alert-text-important {
+    color: rgb(163, 113, 247);
+}
+.md-alert-text-warning {
+    color:  rgb(210, 153, 34);
+}
+
+
+/* ============ 纯黑背景适配（build_themes.py） ============ */
+
+/* 代码块：底色 #0f0f0f 在纯黑上几乎融进背景，补一道极淡边框勾出范围 */
+.md-fences {
+    border: 1px solid #262626;
+}
+
+/* 行内代码：保持 night 原设计（继承正文字色），
+   仅把半透明白底从 5% 提到 8%，否则纯黑上看不出边界 */
+code, tt, var {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* 分隔线：#1a1a1a 对纯黑只有 1.21:1，等于画了条看不见的线 */
+#write hr {
+    background-color: #2e2e2e;
+}
+
+/* 选区：深蓝底 + 文字可读 */
+::selection,
+*::selection {
+    background: #2b4a6b;
+    color: #dee3e8;
+}
+
+/* 表格表头：night 用 #dedede，一整行在纯黑上偏亮，压到比正文高一档 */
+#write th {
+    color: #c4c8cc;
+}
+
+/* 粗体不再额外提亮：暗色下字形变粗本身就会显亮 */
+#write strong,
+#write b {
+    color: #bcc2c8;
+}
+
+
+/* ============ 导出 PDF / 打印补充（build_themes.py） ============
+   pdf-white.css 已把页面转成白底黑字，但它不认识暗色主题里的
+   代码高亮 token 和几处浅色前景，这里逐条补齐，否则导出后看不见。 */
+
+@media print {
+
+    /* 兜底：万一某个 Typora 版本的导出 DOM 不带 #write，也不至于出黑页 */
+    html, body, .typora-export, .typora-export-content, #write {
+        background: #ffffff !important;
+        color: #333333 !important;
+    }
+
+    /* 代码块语法高亮：暗色主题的亮色 token 在白底上几乎不可见 */
+    #write .md-fences *,
+    #write .md-fences {
+        color: #333333 !important;
+    }
+
+    #write .cm-s-inner .cm-keyword,
+    #write .cm-keyword        { color: #7b2d8e !important; }
+    #write .cm-s-inner .cm-string,
+    #write .cm-s-inner .cm-string-2,
+    #write .cm-string         { color: #b03030 !important; }
+    #write .cm-s-inner .cm-comment,
+    #write .cm-comment        { color: #8a6d3b !important; }
+    #write .cm-s-inner .cm-tag,
+    #write .cm-tag            { color: #1f7a1f !important; }
+    #write .cm-s-inner .cm-attribute,
+    #write .cm-s-inner .cm-def,
+    #write .cm-s-inner .cm-header,
+    #write .cm-attribute      { color: #4a4abf !important; }
+    #write .cm-s-inner .cm-number,
+    #write .cm-number         { color: #2e7d6b !important; }
+    #write .cm-s-inner .cm-atom,
+    #write .cm-s-inner .cm-variable-3,
+    #write .cm-atom           { color: #1a6b8a !important; }
+    #write .cm-s-inner .cm-builtin { color: #a02090 !important; }
+    #write .cm-s-inner .cm-link    { color: #2a5db0 !important; }
+    #write .cm-s-inner .cm-meta,
+    #write .cm-s-inner .cm-qualifier { color: #666666 !important; }
+    #write .cm-s-inner .cm-bracket { color: #665544 !important; }
+
+    /* 行内代码 / 键盘键：屏幕上靠半透明白底，白纸上要换成浅灰底 */
+    #write code,
+    #write tt,
+    #write var {
+        background: #f2f2f2 !important;
+        color: #333333 !important;
+    }
+
+    #write kbd {
+        background: #f0f0f0 !important;
+        color: #333333 !important;
+        border: 1px solid #dddddd !important;
+        box-shadow: none !important;
+    }
+
+    /* 高亮：黄底降到浅黄，避免整块压黑 */
+    #write mark {
+        background: #fff3a3 !important;
+        color: #333333 !important;
+    }
+
+    /* 加粗 / 强调：屏幕上是浅灰 #bcc2c8，白纸上几乎不可见，必须压回深色 */
+    #write strong,
+    #write b,
+    #write dt,
+    #write em {
+        color: #222222 !important;
+    }
+
+    /* 任务列表勾选框：屏幕上是「深底 + 浅灰对勾」，白纸上会变成一个黑方块 */
+    #write .md-task-list-item > input:before {
+        background: #ffffff !important;
+        border: 1px solid #444444 !important;
+    }
+
+    #write .md-task-list-item > input:checked:before,
+    #write .md-task-list-item > input[checked]:before {
+        color: #333333 !important;
+        background: #ffffff !important;
+        border: 1px solid #444444 !important;
+        line-height: 0.875rem !important;  /* night 原值 0.625rem，对勾会偏上 */
+    }
+
+    /* 行内公式 / 脚注角标 / YAML 元信息块 */
+    #write .md-inline-math svg {
+        color: #333333 !important;
+    }
+
+    #write sup.md-footnote {
+        background: #f0f0f0 !important;
+        color: #333333 !important;
+    }
+
+    #write pre.md-meta-block {
+        background: #f7f7f7 !important;
+        color: #666666 !important;
+        border-bottom: 1px dashed #dddddd !important;
+    }
+
+    /* 引用块：pdf-white.css 里写了 border:none !important + padding:0 !important，
+       打印稿中引用与正文完全分不出来。这里恢复一条浅灰左边框和缩进。
+       同特异性、同为 !important，靠「后定义」取胜。 */
+    #write blockquote {
+        border-left: 3px solid #dddddd !important;
+        padding-left: 1em !important;
+        margin-left: 0 !important;
+    }
+
+    /* 评论 / 提示类文字 */
+    #write .md-comment {
+        color: #6b6b6b !important;
+        opacity: 1 !important;
+    }
+
+    #write .md-alert-text-note      { color: #1a5fb4 !important; }
+    #write .md-alert-text-important { color: #6b2fb5 !important; }
+    #write .md-alert-text-warning   { color: #8a5a00 !important; }
+
+    /* 链接：不打论文级别的下划线，但要能看出是链接 */
+    #write a {
+        color: #1a5fb4 !important;
+        text-decoration: underline !important;
+    }
+}

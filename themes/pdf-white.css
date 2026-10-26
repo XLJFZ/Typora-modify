@@ -1,0 +1,173 @@
+
+/* ==========================================
+   Typora PDF White Export
+   白底打印专用样式
+   ========================================== */
+
+@media print {
+
+    /* 1. 页面基础样式 */
+    html,
+    body,
+    #write {
+        background: #ffffff !important;
+        color: #333333 !important;
+    }
+
+    /* 2. 正文字体与行距 */
+    #write {
+        font-family:
+            "Microsoft YaHei",
+            "PingFang SC",
+            "Noto Sans CJK SC",
+            sans-serif !important;
+
+        font-size: 11pt !important;
+        line-height: 1.65 !important;
+    }
+
+    /* 3. 标题样式：移除下划线 */
+    #write h1,
+    #write h2,
+    #write h3,
+    #write h4,
+    #write h5,
+    #write h6 {
+        color: #222222 !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        page-break-after: avoid;
+        break-after: avoid-page;
+    }
+
+    #write h1 {
+        font-size: 22pt !important;
+        margin-top: 0.5em !important;
+        margin-bottom: 0.8em !important;
+    }
+
+    #write h2 {
+        font-size: 16pt !important;
+        margin-top: 1.2em !important;
+        margin-bottom: 0.6em !important;
+    }
+
+    #write h3 {
+        font-size: 13pt !important;
+        margin-top: 1em !important;
+        margin-bottom: 0.5em !important;
+    }
+
+    /* 4. 引用块：取消左侧竖线和缩进 */
+    #write blockquote {
+        border: none !important;
+        border-left: none !important;
+        background: transparent !important;
+        color: #333333 !important;
+
+        margin: 0.6em 0 !important;
+        padding: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    #write blockquote p,
+    #write blockquote span {
+        color: #333333 !important;
+    }
+
+    /* 5. 普通段落 */
+    #write p {
+        margin-top: 0.4em !important;
+        margin-bottom: 0.7em !important;
+        color: #333333 !important;
+    }
+
+    /* 6. 列表：保留正常缩进 */
+    #write ul,
+    #write ol {
+        margin-top: 0.4em !important;
+        margin-bottom: 0.8em !important;
+        padding-left: 2em !important;
+    }
+
+    #write li {
+        color: #333333 !important;
+        margin-bottom: 0.25em !important;
+    }
+
+    /* 7. 表格样式 */
+    #write table {
+        width: 100%;
+        border-collapse: collapse !important;
+        background: #ffffff !important;
+    }
+
+    #write th,
+    #write td {
+        border: 1px solid #cccccc !important;
+        padding: 6px 10px !important;
+        color: #333333 !important;
+        background: #ffffff !important;
+    }
+
+    #write th {
+        font-weight: 600 !important;
+        background: #f5f5f5 !important;
+    }
+
+    /* 8. 代码块 */
+    #write pre {
+        background: #f7f7f7 !important;
+        color: #333333 !important;
+        border: 1px solid #e5e5e5 !important;
+        border-radius: 4px;
+    }
+
+    #write code {
+        color: #333333 !important;
+    }
+
+    /* 9. 水平分隔线 */
+    #write hr {
+        border: none !important;
+        border-top: 1px solid #dddddd !important;
+        background: transparent !important;
+        height: 0 !important;
+        margin: 1em 0 !important;
+    }
+
+    /* 10. 图片 */
+    #write img {
+        max-width: 100% !important;
+        height: auto;
+    }
+
+    /* 11. 避免不合理分页 */
+    #write blockquote,
+    #write pre,
+    #write tr,
+    #write img {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    #write p,
+    #write li {
+        orphans: 2;
+        widows: 2;
+    }
+
+    /* 12. 链接颜色 */
+    #write a {
+        color: #333333 !important;
+        text-decoration: none !important;
+    }
+}
+
+/* 13. 打印页面 */
+@page {
+    size: A4;
+    margin: 20mm 20mm 20mm 20mm;
+    background: #ffffff;
+}

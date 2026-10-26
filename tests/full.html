@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Typora theme test fixture</title>
+<!-- 审计脚本会把这个 link 指向被测主题；手动打开时用仓库内的副本 -->
+<link rel="stylesheet" href="../themes/pure-black-soft.css">
+<style>
+  /* 模拟 Typora 导出 HTML 的外层容器 */
+  body { margin: 0; padding: 0; }
+  #write { padding: 0 20px; }
+</style>
+</head>
+<body class="typora-export">
+<div id="write" class="typora-export-content">
+
+  <pre class="md-fences md-meta-block">title: Test Document
+author: Your Name
+date: 2026-01-01</pre>
+
+  <h1>一级标题 H1</h1>
+  <h2>二级标题 H2</h2>
+  <h3>三级标题 H3</h3>
+  <h4>四级标题 H4</h4>
+  <h5>五级标题 H5</h5>
+  <h6>六级标题 H6</h6>
+
+  <p>正文段落：<strong>加粗文字</strong>、<b>b 标签</b>、<em>斜体</em>、<i>i 标签</i>、
+     <del>删除线</del>、上标<sup>1</sup>、下标<sub>2</sub>、
+     <a href="#">普通链接</a>、<mark>高亮标记</mark>。</p>
+
+  <p>行内代码 <code>const x = 1;</code>、键盘 <kbd>Ctrl</kbd>+<kbd>C</kbd>、
+     变量 <var>n</var>、脚注角标<sup class="md-footnote">[1]</sup>。</p>
+
+  <blockquote><p>引用块：可导必连续，连续不一定可导。</p></blockquote>
+
+  <h4>代码块</h4>
+  <pre class="md-fences cm-s-inner"><code><span class="cm-keyword">def</span> <span class="cm-def">f</span>(<span class="cm-variable">x</span>):
+    <span class="cm-comment"># 注释 comment</span>
+    <span class="cm-keyword">return</span> <span class="cm-string">"字符串"</span> + <span class="cm-number">42</span>
+<span class="cm-tag">&lt;div&gt;</span> <span class="cm-attribute">class</span>=<span class="cm-string">"x"</span></code></pre>
+
+  <h4>表格</h4>
+  <table>
+    <thead><tr><th>列一</th><th>列二</th><th>列三</th></tr></thead>
+    <tbody>
+      <tr><td>数据 A</td><td><strong>加粗单元格</strong></td><td><a href="#">表格内链接</a></td></tr>
+      <tr><td><code>code</code></td><td>普通</td><td><mark>高亮</mark></td></tr>
+    </tbody>
+  </table>
+
+  <h4>列表</h4>
+  <ul>
+    <li>普通无序项</li>
+    <li>含 <strong>加粗</strong> 与 <code>行内码</code></li>
+  </ul>
+  <ol><li>有序一</li><li>有序二</li></ol>
+
+  <ul class="task-list">
+    <li class="md-task-list-item"><input type="checkbox" checked disabled> 已完成任务</li>
+    <li class="md-task-list-item"><input type="checkbox" disabled> 未完成任务</li>
+  </ul>
+
+  <h4>提示块</h4>
+  <div class="md-alert"><p class="md-alert-text-note">NOTE 提示文字</p></div>
+  <div class="md-alert"><p class="md-alert-text-important">IMPORTANT 重要文字</p></div>
+  <div class="md-alert"><p class="md-alert-text-warning">WARNING 警告文字</p></div>
+
+  <p class="md-comment">这是一段注释 comment 文字</p>
+
+  <p><span class="md-inline-math"><svg width="40" height="14"><text x="0" y="11" fill="currentColor">f(x)</text></svg></span> 行内公式</p>
+
+  <hr>
+
+  <p>收尾段落。</p>
+</div>
+</body>
+</html>

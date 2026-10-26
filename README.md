@@ -1,5 +1,7 @@
 # Typora-modify
 
+[![Theme Check](https://github.com/XLJFZ/Typora-modify/actions/workflows/theme-check.yml/badge.svg)](https://github.com/XLJFZ/Typora-modify/actions/workflows/theme-check.yml)
+
 两个基于 Typora 内置 `night` 主题改造的**纯黑（OLED）主题**，外加一套让**导出 PDF 自动转白底**的解决方案。
 
 内置 `night` 的背景是深灰 `#363B40`，不是纯黑；而且用深色主题直接导出 PDF，会得到一整页黑底。这个仓库解决这两件事。
@@ -91,6 +93,12 @@ python scripts/audit_computed.py --css themes/pure-black.css
 - **`audit_computed.py`** — 用 Playwright 读浏览器的 computed style，对 `screen` / `print` 两种媒体各算一遍对比度。层叠、`!important`、继承全由浏览器裁决，比手写正则猜可靠。
 
 `audit_computed.py` 有两个坑值得记：读到的背景常是 `rgba(0,0,0,0)`，**必须按 alpha 与页面底色合成**，否则会把「8% 白叠加」误读成纯白；`hr` 屏幕用 `background` 画线、打印用 `border-top` 画线，取色要按实际生效的属性来。
+
+## CI
+
+`.github/workflows/theme-check.yml` 在每次 push 时跑一遍：静态审查 + 双媒体对比度审计 + 安装清单完整性检查。任何一项发现问题，构建直接失败。
+
+注意 `build_themes.py` **不**在 CI 里跑 —— 它需要本机 Typora 的 `night.css` 作为基座，CI 上没有。所以改配色要本地生成后提交 `themes/` 下的产物。
 
 ## 已知限制
 

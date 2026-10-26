@@ -1,0 +1,59 @@
+name: Theme Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: 配色与结构检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装 Playwright 与 Chromium
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: 静态审查（结构 / @import / 命名色 / 中灰背景）
+        run: |
+          set -e
+          for f in themes/pure-black.css themes/pure-black-soft.css; do
+            echo "::group::$f"
+            python scripts/review_theme.py --css "$f"
+            echo "::endgroup::"
+          done
+
+      - name: 对比度审计（screen + print 双媒体）
+        run: |
+          set -e
+          for f in themes/pure-black.css themes/pure-black-soft.css; do
+            echo "::group::$f"
+            python scripts/audit_computed.py --css "$f" --browser chromium
+            echo "::endgroup::"
+          done
+
+      - name: 安装清单完整性
+        run: |
+          set -e
+          # 主题 @import 了 pdf-white.css，少一个文件导出 PDF 就会退回黑底
+          for f in pure-black.css pure-black-soft.css pdf-white.css; do
+            test -f "themes/$f" || { echo "::error::缺少 themes/$f"; exit 1; }
+            echo "OK  themes/$f"
+          done
+          # README 里引用的预览图得真实存在
+          for f in preview/screen.png preview/sample.pdf; do
+            test -f "$f" || { echo "::error::缺少 $f"; exit 1; }
+            echo "OK  $f"
+          done

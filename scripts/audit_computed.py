@@ -15,6 +15,7 @@
 import argparse
 import os
 import sys
+from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
@@ -124,12 +125,14 @@ def cr(a, b):
 
 
 def run(media, css, browser):
-    css_url = 'file:///' + os.path.abspath(css).replace('\\', '/')
+    # 用 Path.as_uri() 而不是手工拼 file:///，否则 Linux 下会变成 file:////home/...
+    css_url = Path(css).resolve().as_uri()
+    html_url = Path(HTML).resolve().as_uri()
     with sync_playwright() as pw:
         br = pw.chromium.launch(channel=browser, headless=True)
         pg = br.new_page(viewport={'width': 1000, 'height': 1400})
         pg.emulate_media(media=media)
-        pg.goto('file:///' + HTML.replace('\\', '/'))
+        pg.goto(html_url)
         # 把测试页的样式表指向待审计主题
         pg.evaluate("u => { document.querySelector('link[rel=stylesheet]').href = u; }", css_url)
         pg.wait_for_timeout(500)

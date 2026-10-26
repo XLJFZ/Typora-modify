@@ -19,7 +19,7 @@
 
 ## 安装
 
-**方式一（推荐）**：[下载 v1.0.0 安装包](https://github.com/XLJFZ/Typora-modify/releases/latest) —— 解压得到三个 css + 一份安装说明。
+**方式一（推荐）**：[下载最新安装包](https://github.com/XLJFZ/Typora-modify/releases/latest) —— 解压得到三个 css + 一份安装说明。
 
 **方式二**：直接复制仓库 `themes/` 下的文件。
 

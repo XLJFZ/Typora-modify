@@ -1081,8 +1081,8 @@ code, tt, var {
                  "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
     --font-title: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei",
                   "PingFang SC", "Hiragino Sans GB", sans-serif;
-    --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code",
-                 Consolas, "Courier New", monospace;
+    --font-mono: "Maple Mono CN", "JetBrains Mono", "Fira Code",
+                 "Cascadia Code", Consolas, "Courier New", monospace;
 }
 
 html, body, button, input, select, textarea {

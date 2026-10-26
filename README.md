@@ -88,10 +88,25 @@ Typora 默认用**当前主题**导出 PDF。官方文档也写明 Windows / Lin
 ```css
 --font-text   正文     Noto Sans SC → 思源黑体 → 微软雅黑 → 苹方 → 文泉驿
 --font-title  标题     同上，去掉最后的兜底
---font-mono   代码     JetBrains Mono → Fira Code → Cascadia Code → Consolas
+--font-mono   代码     Maple Mono CN → JetBrains Mono → Fira Code → Cascadia Code → Consolas
 ```
 
 **本机没装的字体会自动降级**，所以「装了就生效，没装维持原样」，不会把你的文档改乱。
+
+### 代码字体为什么把 Maple Mono CN 放第一
+
+代码块里只要有中文注释，就涉及「中文全角 = 英文半角 × 2」这个前提。做不到的话，中英混排行会错位。实测（20px 字号下测字符宽度）：
+
+| 字体 | 英文宽 | 中文宽 | 中文/英文 |
+|---|---|---|---|
+| **Maple Mono CN** | 12.00 | 24.00 | **2.00** ✅ |
+| JetBrains Mono | 12.00 | 20.00 | 1.67 |
+| Fira Code | 12.31 | 20.00 | 1.63 |
+| Cascadia Code | 11.72 | 20.00 | 1.71 |
+
+JetBrains Mono、Fira Code 这类**不含中文字形**（宽度 20 是 fallback 到系统字体的 1em，不等于英文宽的整数倍）。只有 Maple Mono CN 是真的把中文做成 2× 宽，代码块里中英混排才对得齐。
+
+代价是体积：单个字重含完整 CJK 字形，17.7 MB。只装 Regular / Bold / Italic 三个就够。
 
 行高从 `1.625rem`（固定 26px）改成无单位的 `1.625` —— 数值上仍是 26px，观感零变化，但字号一改行距会跟着缩放，不再脱节。
 

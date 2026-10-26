@@ -326,13 +326,27 @@ PRINT_EXTRA = """
 PRINT_SERIF_EXTRA = """
 
 /* ============ PDF 宋体（可选变体） ============
-   屏幕一个字都不改，只在导出 PDF 时把正文换成宋体。
-   标题保持黑体 —— 中文学术排版通例是「黑体标题 + 宋体正文」，
-   全换宋体会失去层次感。
-   代码块走 --font-mono，不受影响。 */
+   Typora 的 PDF 导出页面带 typora-print 类。
+   同时覆盖导出页面的屏幕预排版和 print 媒体，编辑页面不受影响。
+   Windows 优先使用系统宋体；其他平台回退到思源宋体等字体。
+   标题保留黑体，代码保留等宽字体。 */
+
+.typora-print #write,
+.typora-print #write p,
+.typora-print #write li,
+.typora-print #write td,
+.typora-print #write dl,
+.typora-print #write blockquote,
+.typora-print #write blockquote p {
+    font-family: "SimSun", "宋体", "Noto Serif SC", "Source Han Serif SC",
+                 "Songti SC", "STSong", serif !important;
+}
+
+.typora-print #write {
+    font-size: 11.5pt !important;
+}
 
 @media print {
-
     #write,
     #write p,
     #write li,
@@ -340,12 +354,10 @@ PRINT_SERIF_EXTRA = """
     #write dl,
     #write blockquote,
     #write blockquote p {
-        font-family: "Noto Serif SC", "Source Han Serif SC", "STZhongsong",
-                     "SimSun", serif !important;
+        font-family: "SimSun", "宋体", "Noto Serif SC", "Source Han Serif SC",
+                     "Songti SC", "STSong", serif !important;
     }
 
-    /* pdf-white.css 默认正文 11pt，宋体在这个字号下横画偏淡；
-       国标对论文正文的建议是小四（12pt），取 11.5pt 折中。 */
     #write {
         font-size: 11.5pt !important;
     }
@@ -416,7 +428,7 @@ def build(variant):
     if variant == 'soft-serif':
         desc = ('/* pure-black-soft-serif —— 屏幕同 pure-black-soft，导出 PDF 用宋体\n'
                 ' * 屏幕：主文字 #b2b8be，对纯黑 10.49:1（与 pure-black-soft 逐像素一致）\n'
-                ' * PDF ：正文换 Noto Serif SC，标题仍黑体，正文 11pt -> 11.5pt\n'
+                ' * PDF ：正文优先 Windows 宋体，标题仍黑体，正文 11pt -> 11.5pt\n'
                 ' * 想回到黑体 PDF：在「主题」菜单切回 pure-black-soft 即可。\n')
     elif 'soft' in variant:
         desc = ('/* pure-black-soft —— OLED 纯黑 + 文字压一档\n'
@@ -441,7 +453,7 @@ def build(variant):
     print('%-24s %5.1f KB  正文 %s  括号 %d/%d %s  未命中 %d  打印 %s'
           % (os.path.basename(out), len(s.encode('utf-8')) / 1024, key,
              s.count('{'), s.count('}'), 'OK' if s.count('{') == s.count('}') else 'FAIL',
-             len(missed), '宋体' if 'Noto Serif SC' in s.split('@media print')[-1] else '黑体'))
+             len(missed), '宋体' if variant == 'soft-serif' else '黑体'))
     return out, s
 
 

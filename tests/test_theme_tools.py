@@ -130,6 +130,23 @@ class BrowserSampling(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Missing CSS imports'):
                 audit.run('screen', css, 'chromium')
 
+    def test_typora_pdf_container_font_in_both_media(self):
+        page = self.browser.new_page()
+        try:
+            page.set_content('<body><div id="write"><h1>标题</h1><p>正文</p><code>code</code></div></body>')
+            page.add_style_tag(content=builder.SCREEN_EXTRA + builder.PRINT_SERIF_EXTRA)
+            family = lambda selector: page.locator(selector).evaluate('(el) => getComputedStyle(el).fontFamily')
+            editor_text, editor_title, editor_code = family('p'), family('h1'), family('code')
+            self.assertNotIn('SimSun', editor_text)
+            page.locator('body').evaluate("el => el.classList.add('typora-print')")
+            for media in ('screen', 'print'):
+                page.emulate_media(media=media)
+                self.assertTrue(family('p').startswith('SimSun'))
+                self.assertEqual(family('h1'), editor_title)
+                self.assertEqual(family('code'), editor_code)
+        finally:
+            page.close()
+
     def test_missing_element_fails_without_unpack_error(self):
         page = self.browser.new_page()
         try:

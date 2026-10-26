@@ -217,6 +217,14 @@ PRINT_EXTRA = """
         color: #333333 !important;
     }
 
+    /* pdf-white.css 把 #write 的字体硬编码成 "Microsoft YaHei" !important，
+       于是主题设的 --font-text 在 PDF 里被顶掉、正文变成雅黑。
+       这里改回跟随主题字体栈，屏幕和纸面才是同一套字。
+       同特异性 + 同 !important，靠后定义取胜。 */
+    #write {
+        font-family: var(--font-text) !important;
+    }
+
     /* 代码块语法高亮：暗色主题的亮色 token 在白底上几乎不可见 */
     #write .md-fences *,
     #write .md-fences {
@@ -334,6 +342,43 @@ PRINT_EXTRA = """
 """
 
 
+PRINT_SERIF_EXTRA = """
+
+/* ============ PDF 宋体（可选变体） ============
+   屏幕一个字都不改，只在导出 PDF 时把正文换成宋体。
+   标题保持黑体 —— 中文学术排版通例是「黑体标题 + 宋体正文」，
+   全换宋体会失去层次感。
+   代码块走 --font-mono，不受影响。 */
+
+@media print {
+
+    #write,
+    #write p,
+    #write li,
+    #write td,
+    #write dl,
+    #write blockquote,
+    #write blockquote p {
+        font-family: "Noto Serif SC", "Source Han Serif SC", "STZhongsong",
+                     "SimSun", serif !important;
+    }
+
+    /* pdf-white.css 默认正文 11pt，宋体在这个字号下横画偏淡；
+       国标对论文正文的建议是小四（12pt），取 11.5pt 折中。 */
+    #write {
+        font-size: 11.5pt !important;
+    }
+}
+"""
+
+# 变体 -> (输出文件名, 一行说明)
+VARIANTS = {
+    'standard':   ('pure-black.css',            '标准亮度 · 黑体 PDF'),
+    'soft':       ('pure-black-soft.css',       '护眼亮度 · 黑体 PDF'),
+    'soft-serif': ('pure-black-soft-serif.css', '护眼亮度 · 宋体 PDF'),
+}
+
+
 def build(variant):
     s = open(BASE, encoding='utf-8').read()
 
@@ -351,7 +396,7 @@ def build(variant):
         s = replace_ci(s, old, new)
 
     # 2. soft：文字压一档
-    if variant == 'soft':
+    if 'soft' in variant:
         s = re.sub(r'#[0-9a-fA-F]{6}\b',
                    lambda m: TEXT_MAP_SOFT.get(m.group(0).lower(), m.group(0)), s)
 
@@ -370,33 +415,41 @@ def build(variant):
 
     # 5. 屏幕 + 打印补充
     s += SCREEN_EXTRA
-    if variant == 'soft':
+    if 'soft' in variant:
         s += SCREEN_EXTRA_SOFT
     s += PRINT_EXTRA
+    if variant == 'soft-serif':
+        s += PRINT_SERIF_EXTRA
 
     # 6. 头部说明
-    if variant == 'soft':
+    if variant == 'soft-serif':
+        desc = ('/* pure-black-soft-serif —— 屏幕同 pure-black-soft，导出 PDF 用宋体\n'
+                ' * 屏幕：主文字 #b2b8be，对纯黑 10.49:1（与 pure-black-soft 逐像素一致）\n'
+                ' * PDF ：正文换 Noto Serif SC，标题仍黑体，正文 11pt -> 11.5pt\n'
+                ' * 想回到黑体 PDF：在「主题」菜单切回 pure-black-soft 即可。\n')
+    elif 'soft' in variant:
         desc = ('/* pure-black-soft —— OLED 纯黑 + 文字压一档\n'
                 ' * 主文字 #b2b8be，对纯黑 10.49:1（night 原版 11.31:1）\n'
-                ' * 唯一可调变量：--text-color。改回 #b8bfc6 即等于 pure-black。\n')
+                ' * 唯一可调变量：--text-color。改回 #b8bfc6 即等于 pure-black。\n'
+                ' * 导出 PDF 用黑体；要宋体 PDF 请用 pure-black-soft-serif。\n')
     else:
         desc = ('/* pure-black —— OLED 纯黑 + night 原始文字亮度\n'
                 ' * 主文字 #b8bfc6，对纯黑 11.31:1。白天/大屏用这个。\n'
                 ' * 想把整体压柔一点：把 --text-color 改成 #b2b8be。\n')
-    desc += (' * 两版共享全部缺陷修复，并 @import "pdf-white.css"，\n'
+    desc += (' * 共享全部缺陷修复，并 @import "pdf-white.css"，\n'
              ' * 导出 PDF 会自动转白底黑字，不需要手动切主题。\n'
              ' * 生成脚本：build_themes.py（改配色请改脚本重跑，不要手改本文件）\n'
              ' */\n\n')
     s = desc + s
 
-    out = os.path.join(OUT_DIR, 'pure-black.css' if variant == 'standard' else 'pure-black-soft.css')
+    out = os.path.join(OUT_DIR, VARIANTS[variant][0])
     open(out, 'w', encoding='utf-8', newline='\n').write(s)
 
     key = re.search(r'--text-color:\s*(#[0-9a-f]{6});', s).group(1)
-    print('%-20s %5.1f KB  正文 %s  括号 %d/%d %s  未命中修复 %d  打印补丁 %s'
+    print('%-24s %5.1f KB  正文 %s  括号 %d/%d %s  未命中 %d  打印 %s'
           % (os.path.basename(out), len(s.encode('utf-8')) / 1024, key,
              s.count('{'), s.count('}'), 'OK' if s.count('{') == s.count('}') else 'FAIL',
-             len(missed), 'YES' if '@media print' in s else 'NO'))
+             len(missed), '宋体' if 'Noto Serif SC' in s.split('@media print')[-1] else '黑体'))
     return out
 
 
@@ -436,7 +489,7 @@ def main():
         else:
             print('警告: %s 不存在，导出 PDF 的打印样式不会生效。' % pdfw)
 
-    for v in ('standard', 'soft'):
+    for v in ('standard', 'soft', 'soft-serif'):
         build(v)
 
 

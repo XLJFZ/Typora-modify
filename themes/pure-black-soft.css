@@ -1,7 +1,8 @@
 /* pure-black-soft —— OLED 纯黑 + 文字压一档
  * 主文字 #b2b8be，对纯黑 10.49:1（night 原版 11.31:1）
  * 唯一可调变量：--text-color。改回 #b8bfc6 即等于 pure-black。
- * 两版共享全部缺陷修复，并 @import "pdf-white.css"，
+ * 导出 PDF 用黑体；要宋体 PDF 请用 pure-black-soft-serif。
+ * 共享全部缺陷修复，并 @import "pdf-white.css"，
  * 导出 PDF 会自动转白底黑字，不需要手动切主题。
  * 生成脚本：build_themes.py（改配色请改脚本重跑，不要手改本文件）
  */
@@ -1128,6 +1129,14 @@ html, body, #write {
     html, body, .typora-export, .typora-export-content, #write {
         background: #ffffff !important;
         color: #333333 !important;
+    }
+
+    /* pdf-white.css 把 #write 的字体硬编码成 "Microsoft YaHei" !important，
+       于是主题设的 --font-text 在 PDF 里被顶掉、正文变成雅黑。
+       这里改回跟随主题字体栈，屏幕和纸面才是同一套字。
+       同特异性 + 同 !important，靠后定义取胜。 */
+    #write {
+        font-family: var(--font-text) !important;
     }
 
     /* 代码块语法高亮：暗色主题的亮色 token 在白底上几乎不可见 */

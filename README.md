@@ -8,14 +8,16 @@
 
 ![screen](preview/screen.png)
 
-| | `pure-black` | `pure-black-soft` |
-|---|---|---|
-| 定位 | 纯黑 + night 原始文字亮度，白天/大屏 | 纯黑 + 文字压一档，长时间写作 |
-| 正文色 | `#B8BFC6` | `#B2B8BE` |
-| 对纯黑对比度 | 11.31:1 | 10.49:1 |
-| 背景 | `#000000` | `#000000` |
+| | `pure-black` | `pure-black-soft` | `pure-black-soft-serif` |
+|---|---|---|---|
+| 定位 | 标准亮度 | 护眼亮度 | 护眼亮度 + **PDF 宋体** |
+| 正文色 | `#B8BFC6` | `#B2B8BE` | `#B2B8BE` |
+| 屏幕对比度 | 11.31:1 | 10.49:1 | 10.49:1 |
+| 导出 PDF 正文 | 黑体 | 黑体 | **宋体** |
 
-两版共享同一套缺陷修复，只是文字亮度差一档。
+前两个屏幕观感不同；后两个**屏幕逐像素完全一致**，只在导出 PDF 时正文换宋体。
+
+关闭（切换）：Typora 菜单 `主题` → 点一下就换。这就是主题自带的切换方式，不需要额外按钮。
 
 ## 安装
 
@@ -24,10 +26,11 @@
 **方式二**：直接复制仓库 `themes/` 下的文件。
 
 1. Typora → 菜单 `主题` → `打开主题文件夹`
-2. 把**三个文件**一起复制进去：
+2. 把**四个文件**一起复制进去：
    - `pure-black.css`
    - `pure-black-soft.css`
-   - `pdf-white.css` ← 打印样式，被上面两个 `@import`，**不能少**
+   - `pure-black-soft-serif.css`
+   - `pdf-white.css` ← 打印样式，被上面三个 `@import`，**不能少**
 3. 重启 Typora，在 `主题` 菜单里选一个
 
 > `night/` 子目录是 Typora 自带的（`themes/night/*.css`），不用额外准备。
@@ -56,8 +59,18 @@ Typora 默认用**当前主题**导出 PDF。官方文档也写明 Windows / Lin
 | 任务列表成黑方块 | `input:before` 的深色底 + 黑边框，白底上就是实心块 | 改白底 + `#444` 边框 |
 | 代码高亮全糊 | `night/codeblock.dark.css` 的 token 是 `#7DF46A` 这类亮色 | 逐类换深色 + `*` 兜底 |
 | 引用块被拍平 | `pdf-white.css` 里有 `border:none !important` | 后面用同特异性 `!important` 恢复左边框 |
+| **主题字体在 PDF 里失效** | `pdf-white.css` 硬编码 `#write { font-family: "Microsoft YaHei" !important }`，把主题的 `--font-text` 顶掉 | print 里改回 `var(--font-text)`，屏幕与纸面才是同一套字 |
 
 导出后全元素最低对比度 4.85:1（代码注释）。
+
+### PDF 宋体变体
+
+`pure-black-soft-serif` 只在打印媒体里换字体，**屏幕一个像素都不动**（实测两版截图逐像素差 0）。两个设计取舍：
+
+- **标题保持黑体** —— 中文学术排版通例是「黑体标题 + 宋体正文」，全换宋体会失去层次。
+- **正文 11pt → 11.5pt** —— 宋体在 11pt 下横画偏淡；国标对论文正文的建议是小四（12pt），取 11.5pt 折中。
+
+代价：PDF 从 178 KB 涨到 379 KB。中文字形在 PDF 里会被转成 Type3 矢量路径（CJK 字体太大，Chromium 嵌不进去），视觉正确、文字仍可复制检索，只是体积变大。
 
 ## 配色设计
 

@@ -81,6 +81,44 @@ Typora 默认用**当前主题**导出 PDF。官方文档也写明 Windows / Lin
 
 `night` 主题还有一处原有缺陷：`mark {}` 只设了黄底 `#D3D40E` 却没设 `color`，文字继承正文浅灰，压在黄底上几乎读不出来。两个主题都补了 `color: #0f0f0f`。
 
+## 字体与行距
+
+`night` 的字体栈里**没有任何中文字体**（正文是 Helvetica/Arial 系，标题是 Lucida Grande/Corbel），中文只能 fallback 到系统默认，中西文字形对不上。补了三个可调变量：
+
+```css
+--font-text   正文     Noto Sans SC → 思源黑体 → 微软雅黑 → 苹方 → 文泉驿
+--font-title  标题     同上，去掉最后的兜底
+--font-mono   代码     JetBrains Mono → Fira Code → Cascadia Code → Consolas
+```
+
+**本机没装的字体会自动降级**，所以「装了就生效，没装维持原样」，不会把你的文档改乱。
+
+行高从 `1.625rem`（固定 26px）改成无单位的 `1.625` —— 数值上仍是 26px，观感零变化，但字号一改行距会跟着缩放，不再脱节。
+
+## 可选调整
+
+几个常见需求，按需自己加进 `{theme}.user.css`（见下）：
+
+```css
+/* 中文长文更透气：行高从 1.625 提到 1.75 */
+html, body, #write { line-height: 1.75; }
+
+/* 独立成行的图片居中（行内图片不受影响） */
+#write p > .md-image:only-child {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+/* 想要出版物质感的衬线正文 */
+:root {
+    --font-text: "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif;
+}
+```
+
+> 不建议直接改主题文件 —— Typora 加载顺序是「基础样式 → 当前主题 → `base.user.css` → `{当前主题}.user.css`」。写进 `.user.css` 就能覆盖主题，将来换新版主题也不丢。文件名大小写敏感，`pure-black-soft.css` 对应 `pure-black-soft.user.css`。
+
 ## 脚本
 
 ```bash

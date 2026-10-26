@@ -151,6 +151,42 @@ code, tt, var {
     background: #2b4a6b;
     color: #dee3e8;
 }
+
+/* ============ 字体与行距 ============
+   night 原主题的字体栈里没有任何中文字体（正文是 Helvetica/Arial 系，
+   标题是 Lucida Grande/Corbel），Windows 上中文只能 fallback 到系统默认，
+   中西文字形不统一。这里补一层可控的字体栈——本机没装的字体会自动降级，
+   所以「装了才生效，没装维持原样」，不会把别人的文档改乱。
+   换字体只改这三个变量。 */
+:root {
+    --font-text: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei",
+                 "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+    --font-title: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei",
+                  "PingFang SC", "Hiragino Sans GB", sans-serif;
+    --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code",
+                 Consolas, "Courier New", monospace;
+}
+
+html, body, button, input, select, textarea {
+    font-family: var(--font-text);
+}
+
+#write h1, #write h2, #write h3,
+#write h4, #write h5, #write h6 {
+    font-family: var(--font-title);
+}
+
+#write pre, #write code, #write kbd,
+#write tt, #write var {
+    font-family: var(--font-mono);
+}
+
+/* night 写的是 line-height: 1.625rem —— 固定 26px，字号一改行距就不跟。
+   换成无单位值后 1.625 × 16px 仍是 26px，观感不变但语义正确。
+   想更松：改成 1.75（中文长文更透气）。 */
+html, body, #write {
+    line-height: 1.625;
+}
 """
 
 SCREEN_EXTRA_SOFT = """

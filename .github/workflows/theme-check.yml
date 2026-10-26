@@ -20,11 +20,33 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: 安装 Playwright 与 Chromium
+      - name: 安装 Playwright（Python 包）
         run: |
           python -m pip install --upgrade pip
           pip install playwright
-          playwright install --with-deps chromium
+
+      - name: 读取 Playwright 版本
+        id: pwver
+        run: echo "v=$(pip show playwright | awk '/^Version/{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: 缓存 Chromium
+        id: pwcache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          # key 带 playwright 版本：升级后自动换 key 重新缓存
+          # （GitHub Actions 的 cache 不可变，固定 key 会让新版本永远写不进去）
+          key: pw-${{ runner.os }}-${{ steps.pwver.outputs.v }}
+
+      - name: 安装 Chromium 与系统依赖
+        run: |
+          if [ "${{ steps.pwcache.outputs.cache-hit }}" = "true" ]; then
+            echo "缓存命中：只补系统依赖，跳过 130MB 浏览器下载"
+            playwright install-deps chromium
+          else
+            echo "缓存未命中：完整安装"
+            playwright install --with-deps chromium
+          fi
 
       - name: 静态审查（结构 / @import / 命名色 / 中灰背景）
         run: |

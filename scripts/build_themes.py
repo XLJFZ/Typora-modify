@@ -325,9 +325,18 @@ body.typora-print #write {
     #write .md-alert-text-warning   { color: #8a5a00 !important; }
 
     /* 链接：不打论文级别的下划线，但要能看出是链接 */
-    #write a {
+    #write a:not(.md-print-anchor) {
         color: #1a5fb4 !important;
         text-decoration: underline !important;
+    }
+
+    /* PDF 书签锚点里只有空格；给它加下划线会在页面右侧留下蓝短线。
+       保留节点及其链接区域，避免破坏 Typora 的书签定位。 */
+    #write a.md-print-anchor {
+        text-decoration: none !important;
+        color: inherit !important;
+        border: none !important;
+        box-shadow: none !important;
     }
 }
 """

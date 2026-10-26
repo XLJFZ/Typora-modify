@@ -164,6 +164,21 @@ class BrowserSampling(unittest.TestCase):
         finally:
             page.close()
 
+    def test_bookmark_anchors_have_no_link_decoration(self):
+        page = self.browser.new_page()
+        try:
+            page.set_content('<body class="typora-print"><div id="write"><h1><a class="md-header-anchor md-print-anchor" href="af://header"> </a>标题</h1><p><a href="https://example.com">正常链接</a></p></div></body>')
+            page.add_style_tag(content='a.md-print-anchor { display: inline-block !important; position: absolute !important; width: 1px !important; right: 0 !important; text-decoration: initial !important; }' + builder.PRINT_EXTRA)
+            page.emulate_media(media='print')
+            anchor = page.locator('a.md-print-anchor')
+            self.assertEqual(anchor.evaluate('(el) => getComputedStyle(el).textDecorationLine'), 'none')
+            self.assertNotEqual(anchor.evaluate('(el) => getComputedStyle(el).display'), 'none')
+            self.assertEqual(anchor.evaluate('(el) => el.getBoundingClientRect().width'), 1)
+            self.assertEqual(anchor.get_attribute('href'), 'af://header')
+            self.assertEqual(page.locator('p a').evaluate('(el) => getComputedStyle(el).textDecorationLine'), 'underline')
+        finally:
+            page.close()
+
     def test_missing_element_fails_without_unpack_error(self):
         page = self.browser.new_page()
         try:

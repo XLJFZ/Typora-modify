@@ -179,6 +179,10 @@ python scripts/audit_computed.py --css themes/pure-black.css
 
 生成脚本会先验证全部变体，必要替换未命中就停止。输出目录的 `pdf-white.css` 默认同步仓库版本；有自定义修改时使用 `--keep-pdf-white`。共享字体和引用打印规则统一维护在 `themes/pdf-white.css`。
 
+### 发布新版
+
+`VERSION` 保存版本号（例如 `v1.2.1`），`RELEASE_NOTES.md` 保存当前版本说明。修改这两个文件并推送到 `main` 后，发布流程会先运行检查，再打包四个 CSS、README 和许可证，创建带安装包的最新 Release。已有版本不会被覆盖。
+
 ## 已知限制
 
 - 只测了 Windows + Typora 1.x。macOS / Linux 的主题目录路径脚本会自动探测，但没实测过。

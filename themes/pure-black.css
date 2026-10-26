@@ -1116,6 +1116,16 @@ html, body, #write {
    pdf-white.css 已把页面转成白底黑字，但它不认识暗色主题里的
    代码高亮 token 和几处浅色前景，这里逐条补齐，否则导出后看不见。 */
 
+/* Typora 在屏幕媒体下读取正文窗口的背景色，生成独立页眉/页脚。
+   因此导出容器必须在预排版阶段就为白底深字；仅 print 规则不够。 */
+html:has(body.typora-print),
+body.typora-print,
+body.typora-print #write {
+    background: #ffffff !important;
+    color: #333333 !important;
+    color-scheme: light;
+}
+
 @media print {
 
     /* 兜底：万一某个 Typora 版本的导出 DOM 不带 #write，也不至于出黑页 */

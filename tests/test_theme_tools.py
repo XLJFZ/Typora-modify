@@ -147,6 +147,23 @@ class BrowserSampling(unittest.TestCase):
         finally:
             page.close()
 
+    def test_typora_header_footer_style_snapshot_is_white(self):
+        page = self.browser.new_page()
+        try:
+            page.set_content('<body><div id="write"><p>正文</p></div></body>')
+            page.add_style_tag(content='html, body { background: black; color: #b2b8be; }' + builder.PRINT_EXTRA)
+            bg = lambda selector: page.locator(selector).evaluate('(el) => getComputedStyle(el).backgroundColor')
+            self.assertEqual(bg('body'), 'rgb(0, 0, 0)')
+            page.locator('body').evaluate("el => el.classList.add('typora-print')")
+            # Typora reads these colors before printing to paint separate header/footer PDFs.
+            for media in ('screen', 'print'):
+                page.emulate_media(media=media)
+                for selector in ('html', 'body', '#write'):
+                    self.assertEqual(bg(selector), 'rgb(255, 255, 255)')
+                self.assertEqual(page.locator('#write').evaluate('(el) => getComputedStyle(el).color'), 'rgb(51, 51, 51)')
+        finally:
+            page.close()
+
     def test_missing_element_fails_without_unpack_error(self):
         page = self.browser.new_page()
         try:

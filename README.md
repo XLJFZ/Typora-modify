@@ -19,8 +19,12 @@
 
 ## 安装
 
+**方式一（推荐）**：[下载 v1.0.0 安装包](https://github.com/XLJFZ/Typora-modify/releases/latest) —— 解压得到三个 css + 一份安装说明。
+
+**方式二**：直接复制仓库 `themes/` 下的文件。
+
 1. Typora → 菜单 `主题` → `打开主题文件夹`
-2. 把 `themes/` 下的**三个文件**一起复制进去：
+2. 把**三个文件**一起复制进去：
    - `pure-black.css`
    - `pure-black-soft.css`
    - `pdf-white.css` ← 打印样式，被上面两个 `@import`，**不能少**

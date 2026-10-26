@@ -13,6 +13,7 @@ import argparse
 import os
 import re
 import sys
+from theme_dependencies import check_imports, imports
 
 # 这些命名色是 hex 映射的盲区，纯黑主题正文里出现基本等于漏改
 NAMED_DANGER = ['white', 'gray', 'grey', 'silver', 'lightgray', 'lightgrey',
@@ -83,13 +84,16 @@ def is_text_selector(sel):
 def main():
     ap = argparse.ArgumentParser(description='静态审查 Typora 主题文件。')
     ap.add_argument('--css', default=os.path.join(guess_themes_dir(), 'pure-black-soft.css'))
+    ap.add_argument('--allow-missing-night', action='store_true',
+                    help='仅部分检查：允许缺少 Typora 内置依赖')
     args = ap.parse_args()
 
     path = args.css
     if not os.path.exists(path):
         sys.exit('找不到 %s' % path)
 
-    src = open(path, encoding='utf-8').read()
+    with open(path, encoding='utf-8') as stream:
+        src = stream.read()
     print('审查文件: %s (%.1f KB)' % (os.path.basename(path), len(src.encode('utf-8')) / 1024))
     print()
 
@@ -107,18 +111,16 @@ def main():
 
     # 2. @import
     print('[@import]')
-    for imp in re.findall(r'@import\s+(?:url\()?["\']([^"\']+)["\']', src):
-        if imp.startswith('night/'):
-            # 这三个来自 Typora 安装目录的 themes/night/，主题放进 Typora 后自然存在
-            print('  %-32s %s' % (imp, 'Typora 内置，随主题目录提供'))
-            continue
-        fp = os.path.join(os.path.dirname(path), imp)
-        ok = os.path.exists(fp)
-        print('  %-32s %s' % (imp, 'OK' if ok else '缺失'))
-        problems += 0 if ok else 1
+    missing, skipped = check_imports(path, args.allow_missing_night)
+    for dependency in missing:
+        print('  FAIL missing:', dependency)
+    for dependency in skipped:
+        print('  PARTIAL unchecked Typora dependency:', dependency)
+    problems += len(missing)
 
-    first_rule = src.find('{')
-    if [m.start() for m in re.finditer(r'@import', src) if m.start() > first_rule]:
+    uncommented = re.sub(r'/\*.*?\*/', '', src, flags=re.S)
+    first_rule = uncommented.find('{')
+    if [m.start() for m in re.finditer(r'@import', uncommented) if m.start() > first_rule]:
         print('  ! 有 @import 位于规则之后，浏览器会忽略')
         problems += 1
 
@@ -171,7 +173,7 @@ def main():
     has_print = '@media print' in src
     print('  @media print : %s' % ('存在' if has_print else '缺失'))
     problems += 0 if has_print else 1
-    if 'pdf-white.css' not in src:
+    if 'pdf-white.css' not in imports(src):
         print('  ! 未引入 pdf-white.css，导出 PDF 会是黑底')
         problems += 1
 

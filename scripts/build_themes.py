@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """构建 Typora 纯黑系列主题（唯一真源）。
 
-从内置 night.css 派生两个主题：
+从内置 night.css 派生三个主题：
   pure-black.css       纯黑背景 + night 原始文字亮度（较亮，适合白天/大屏）
   pure-black-soft.css  纯黑背景 + 文字压一档（主文字 11.31:1 -> 10.49:1，适合长时间写作）
 
@@ -17,6 +17,7 @@
 用法：python build_themes.py
 """
 import re, os, sys, shutil, argparse, platform
+from theme_dependencies import imports
 
 
 def guess_themes_dir():
@@ -116,14 +117,6 @@ NAMED_FIX = [
     ('border: 1px grey solid;',         'border: 1px solid #2a2a2a;'),
 ]
 
-MARK_FIX_OLD = '''mark {
-    background: #c8c90f;
-}'''
-MARK_FIX_NEW = '''mark {
-    background: #c8c90f;
-    color: #0f0f0f;   /* 黄底必须配深字，night 原主题缺这一条 */
-}'''
-
 # ---------- 屏幕补充 ----------
 SCREEN_EXTRA = """
 
@@ -143,6 +136,11 @@ code, tt, var {
 /* 分隔线：#1a1a1a 对纯黑只有 1.21:1，等于画了条看不见的线 */
 #write hr {
     background-color: #2e2e2e;
+}
+
+/* 内置夜间高亮的属性紫在代码背景上只有约 4.1:1，略微提亮。 */
+@media screen {
+    #write .cm-s-inner .cm-attribute { color: #8a8aec; }
 }
 
 /* 选区：深蓝底 + 文字可读 */
@@ -217,14 +215,6 @@ PRINT_EXTRA = """
         color: #333333 !important;
     }
 
-    /* pdf-white.css 把 #write 的字体硬编码成 "Microsoft YaHei" !important，
-       于是主题设的 --font-text 在 PDF 里被顶掉、正文变成雅黑。
-       这里改回跟随主题字体栈，屏幕和纸面才是同一套字。
-       同特异性 + 同 !important，靠后定义取胜。 */
-    #write {
-        font-family: var(--font-text) !important;
-    }
-
     /* 代码块语法高亮：暗色主题的亮色 token 在白底上几乎不可见 */
     #write .md-fences *,
     #write .md-fences {
@@ -237,7 +227,7 @@ PRINT_EXTRA = """
     #write .cm-s-inner .cm-string-2,
     #write .cm-string         { color: #b03030 !important; }
     #write .cm-s-inner .cm-comment,
-    #write .cm-comment        { color: #8a6d3b !important; }
+    #write .cm-comment        { color: #806335 !important; }
     #write .cm-s-inner .cm-tag,
     #write .cm-tag            { color: #1f7a1f !important; }
     #write .cm-s-inner .cm-attribute,
@@ -245,7 +235,7 @@ PRINT_EXTRA = """
     #write .cm-s-inner .cm-header,
     #write .cm-attribute      { color: #4a4abf !important; }
     #write .cm-s-inner .cm-number,
-    #write .cm-number         { color: #2e7d6b !important; }
+    #write .cm-number         { color: #287460 !important; }
     #write .cm-s-inner .cm-atom,
     #write .cm-s-inner .cm-variable-3,
     #write .cm-atom           { color: #1a6b8a !important; }
@@ -314,15 +304,6 @@ PRINT_EXTRA = """
         border-bottom: 1px dashed #dddddd !important;
     }
 
-    /* 引用块：pdf-white.css 里写了 border:none !important + padding:0 !important，
-       打印稿中引用与正文完全分不出来。这里恢复一条浅灰左边框和缩进。
-       同特异性、同为 !important，靠「后定义」取胜。 */
-    #write blockquote {
-        border-left: 3px solid #dddddd !important;
-        padding-left: 1em !important;
-        margin-left: 0 !important;
-    }
-
     /* 评论 / 提示类文字 */
     #write .md-comment {
         color: #6b6b6b !important;
@@ -380,7 +361,8 @@ VARIANTS = {
 
 
 def build(variant):
-    s = open(BASE, encoding='utf-8').read()
+    with open(BASE, encoding='utf-8') as stream:
+        s = stream.read()
 
     # 1. 灰面 -> 纯黑
     s = re.sub(r'#[0-9a-fA-F]{3,8}\b',
@@ -407,11 +389,20 @@ def build(variant):
             s = replace_ci(s, old, new)
         else:
             missed.append(old)
-    s = s.replace(MARK_FIX_OLD, MARK_FIX_NEW)
+    s, mark_count = re.subn(
+        r'(mark\s*\{\s*background\s*:\s*#[0-9a-f]+\s*;)\s*}',
+        r'\1\n    color: #0f0f0f;\n}', s, flags=re.I)
+    if mark_count != 1:
+        raise ValueError('Cannot locate the night mark rule; no themes written')
 
     # 4. 接入打印样式（@import 必须位于所有规则之前）
-    s = s.replace('@import "night/sourcemode.dark.css";',
-                  '@import "night/sourcemode.dark.css";\n@import "pdf-white.css";', 1)
+    pattern = r"""@import\s+(?:url\(\s*)?["']night/sourcemode\.dark\.css["']\s*\)?\s*;"""
+    s, import_count = re.subn(pattern, lambda m: m.group(0) + '\n@import "pdf-white.css";', s, count=1)
+    if import_count != 1:
+        raise ValueError('Cannot locate sourcemode import; no themes written')
+    if missed:
+        raise ValueError('Required replacements did not match: ' + ', '.join(missed))
+
 
     # 5. 屏幕 + 打印补充
     s += SCREEN_EXTRA
@@ -443,14 +434,15 @@ def build(variant):
     s = desc + s
 
     out = os.path.join(OUT_DIR, VARIANTS[variant][0])
-    open(out, 'w', encoding='utf-8', newline='\n').write(s)
+    if s.count('{') != s.count('}') or 'pdf-white.css' not in imports(s):
+        raise ValueError('Invalid generated CSS: ' + out)
 
     key = re.search(r'--text-color:\s*(#[0-9a-f]{6});', s).group(1)
     print('%-24s %5.1f KB  正文 %s  括号 %d/%d %s  未命中 %d  打印 %s'
           % (os.path.basename(out), len(s.encode('utf-8')) / 1024, key,
              s.count('{'), s.count('}'), 'OK' if s.count('{') == s.count('}') else 'FAIL',
              len(missed), '宋体' if 'Noto Serif SC' in s.split('@media print')[-1] else '黑体'))
-    return out
+    return out, s
 
 
 def main():
@@ -462,6 +454,8 @@ def main():
                     help='Typora 主题目录（读取 night.css）。默认自动探测。')
     ap.add_argument('-o', '--out', default=None,
                     help='输出目录。默认与 --themes 相同，即直接装回 Typora。')
+    ap.add_argument('--keep-pdf-white', action='store_true',
+                    help='保留输出目录自定义的 pdf-white.css（默认同步仓库版本）')
     args = ap.parse_args()
 
     global THEMES, BASE
@@ -475,22 +469,20 @@ def main():
 
     os.makedirs(OUT_DIR, exist_ok=True)
 
-    # 生成的 css 里 @import "pdf-white.css"，该文件必须在输出目录里
+    # Validate all variants before writing any output.
+    generated = [build(v) for v in VARIANTS]
     pdfw = os.path.join(OUT_DIR, 'pdf-white.css')
-    if not os.path.exists(pdfw):
-        here = os.path.dirname(os.path.abspath(__file__))
-        for cand in (os.path.join(THEMES, 'pdf-white.css'),
-                     os.path.join(here, '..', 'themes', 'pdf-white.css'),
-                     os.path.join(here, 'pdf-white.css')):
-            if os.path.exists(cand):
-                shutil.copyfile(cand, pdfw)
-                print('已复制 pdf-white.css -> %s' % OUT_DIR)
-                break
-        else:
-            print('警告: %s 不存在，导出 PDF 的打印样式不会生效。' % pdfw)
+    source = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'themes', 'pdf-white.css')
+    if not os.path.isfile(source):
+        sys.exit('Missing canonical pdf-white.css: ' + source)
+    if not (args.keep_pdf_white and os.path.isfile(pdfw)):
+        if os.path.realpath(source) != os.path.realpath(pdfw):
+            shutil.copyfile(source, pdfw)
+            print('Updated pdf-white.css -> ' + OUT_DIR)
+    for out, content in generated:
+        with open(out, 'w', encoding='utf-8', newline='\n') as stream:
+            stream.write(content)
 
-    for v in ('standard', 'soft', 'soft-serif'):
-        build(v)
 
 
 if __name__ == '__main__':

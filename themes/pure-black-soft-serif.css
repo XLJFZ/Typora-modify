@@ -425,7 +425,7 @@ strong {
 
 mark {
     background: #c8c90f;
-    color: #0f0f0f;   /* 黄底必须配深字，night 原主题缺这一条 */
+    color: #0f0f0f;
 }
 
 blockquote {
@@ -1064,6 +1064,11 @@ code, tt, var {
     background-color: #2e2e2e;
 }
 
+/* 内置夜间高亮的属性紫在代码背景上只有约 4.1:1，略微提亮。 */
+@media screen {
+    #write .cm-s-inner .cm-attribute { color: #8a8aec; }
+}
+
 /* 选区：深蓝底 + 文字可读 */
 ::selection,
 *::selection {
@@ -1131,14 +1136,6 @@ html, body, #write {
         color: #333333 !important;
     }
 
-    /* pdf-white.css 把 #write 的字体硬编码成 "Microsoft YaHei" !important，
-       于是主题设的 --font-text 在 PDF 里被顶掉、正文变成雅黑。
-       这里改回跟随主题字体栈，屏幕和纸面才是同一套字。
-       同特异性 + 同 !important，靠后定义取胜。 */
-    #write {
-        font-family: var(--font-text) !important;
-    }
-
     /* 代码块语法高亮：暗色主题的亮色 token 在白底上几乎不可见 */
     #write .md-fences *,
     #write .md-fences {
@@ -1151,7 +1148,7 @@ html, body, #write {
     #write .cm-s-inner .cm-string-2,
     #write .cm-string         { color: #b03030 !important; }
     #write .cm-s-inner .cm-comment,
-    #write .cm-comment        { color: #8a6d3b !important; }
+    #write .cm-comment        { color: #806335 !important; }
     #write .cm-s-inner .cm-tag,
     #write .cm-tag            { color: #1f7a1f !important; }
     #write .cm-s-inner .cm-attribute,
@@ -1159,7 +1156,7 @@ html, body, #write {
     #write .cm-s-inner .cm-header,
     #write .cm-attribute      { color: #4a4abf !important; }
     #write .cm-s-inner .cm-number,
-    #write .cm-number         { color: #2e7d6b !important; }
+    #write .cm-number         { color: #287460 !important; }
     #write .cm-s-inner .cm-atom,
     #write .cm-s-inner .cm-variable-3,
     #write .cm-atom           { color: #1a6b8a !important; }
@@ -1226,15 +1223,6 @@ html, body, #write {
         background: #f7f7f7 !important;
         color: #666666 !important;
         border-bottom: 1px dashed #dddddd !important;
-    }
-
-    /* 引用块：pdf-white.css 里写了 border:none !important + padding:0 !important，
-       打印稿中引用与正文完全分不出来。这里恢复一条浅灰左边框和缩进。
-       同特异性、同为 !important，靠「后定义」取胜。 */
-    #write blockquote {
-        border-left: 3px solid #dddddd !important;
-        padding-left: 1em !important;
-        margin-left: 0 !important;
     }
 
     /* 评论 / 提示类文字 */

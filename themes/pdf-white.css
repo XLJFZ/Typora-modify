@@ -16,11 +16,8 @@
 
     /* 2. 正文字体与行距 */
     #write {
-        font-family:
-            "Microsoft YaHei",
-            "PingFang SC",
-            "Noto Sans CJK SC",
-            sans-serif !important;
+        font-family: var(--font-text, "Microsoft YaHei", "PingFang SC",
+                         "Noto Sans CJK SC", sans-serif) !important;
 
         font-size: 11pt !important;
         line-height: 1.65 !important;
@@ -59,16 +56,16 @@
         margin-bottom: 0.5em !important;
     }
 
-    /* 4. 引用块：取消左侧竖线和缩进 */
+    /* 4. 引用块：保留边框和缩进 */
     #write blockquote {
         border: none !important;
-        border-left: none !important;
+        border-left: 3px solid #dddddd !important;
         background: transparent !important;
         color: #333333 !important;
 
         margin: 0.6em 0 !important;
         padding: 0 !important;
-        padding-left: 0 !important;
+        padding-left: 1em !important;
     }
 
     #write blockquote p,
@@ -166,8 +163,10 @@
 }
 
 /* 13. 打印页面 */
-@page {
-    size: A4;
-    margin: 20mm 20mm 20mm 20mm;
-    background: #ffffff;
+@media print {
+    @page {
+        size: A4;
+        margin: 20mm 20mm 20mm 20mm;
+        background: #ffffff;
+    }
 }

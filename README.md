@@ -2,7 +2,7 @@
 
 [![Theme Check](https://github.com/XLJFZ/Typora-modify/actions/workflows/theme-check.yml/badge.svg)](https://github.com/XLJFZ/Typora-modify/actions/workflows/theme-check.yml)
 
-两个基于 Typora 内置 `night` 主题改造的**纯黑（OLED）主题**，外加一套让**导出 PDF 自动转白底**的解决方案。
+三个基于 Typora 内置 `night` 主题改造的**纯黑（OLED）主题**，外加一套让**导出 PDF 自动转白底**的解决方案。
 
 内置 `night` 的背景是深灰 `#363B40`，不是纯黑；而且用深色主题直接导出 PDF，会得到一整页黑底。这个仓库解决这两件事。
 
@@ -21,7 +21,7 @@
 
 ## 安装
 
-**方式一（推荐）**：[下载最新安装包](https://github.com/XLJFZ/Typora-modify/releases/latest) —— 解压得到三个 css + 一份安装说明。
+**方式一（推荐）**：[下载最新安装包](https://github.com/XLJFZ/Typora-modify/releases/latest) —— 解压得到四个 css + 一份安装说明。
 
 **方式二**：直接复制仓库 `themes/` 下的文件。
 
@@ -51,17 +51,17 @@ Typora 默认用**当前主题**导出 PDF。官方文档也写明 Windows / Lin
 
 ### 光有 `@media print` 还不够
 
-`@media print` 里把背景刷白之后，暗色主题的一大堆浅色前景会直接消失。实测踩到四个：
+`@media print` 里把背景刷白之后，暗色主题的一大堆浅色前景会直接消失。此前修复了以下问题：
 
 | 问题 | 原因 | 处理 |
 |---|---|---|
 | 加粗文字几乎不可见 | 护眼版把 `strong` 压到 `#BCC2C8`，白纸上近乎消失 | print 内压回 `#222` |
 | 任务列表成黑方块 | `input:before` 的深色底 + 黑边框，白底上就是实心块 | 改白底 + `#444` 边框 |
 | 代码高亮全糊 | `night/codeblock.dark.css` 的 token 是 `#7DF46A` 这类亮色 | 逐类换深色 + `*` 兜底 |
-| 引用块被拍平 | `pdf-white.css` 里有 `border:none !important` | 后面用同特异性 `!important` 恢复左边框 |
-| **主题字体在 PDF 里失效** | `pdf-white.css` 硬编码 `#write { font-family: "Microsoft YaHei" !important }`，把主题的 `--font-text` 顶掉 | print 里改回 `var(--font-text)`，屏幕与纸面才是同一套字 |
+| 引用块被拍平 | 旧打印样式取消了引用边框 | 共享打印样式保留左边框与缩进 |
+| **主题字体在 PDF 里失效** | 旧打印样式硬编码微软雅黑，覆盖了主题字体 | 共享打印样式直接使用 `var(--font-text)` 并保留字体回退 |
 
-导出后全元素最低对比度 4.85:1（代码注释）。
+当前测试样例在完整依赖下通过屏幕和打印文字 4.5:1 的对比度检查；这不代表任意文档、图表或自定义样式都已覆盖。
 
 ### PDF 宋体变体
 
@@ -154,6 +154,7 @@ pip install playwright          # 复用系统 Edge/Chrome，无需 playwright i
 
 python scripts/build_themes.py                  # 从 night.css 重新生成，直接装回 Typora
 python scripts/build_themes.py -o themes        # 生成到指定目录
+python scripts/build_themes.py --keep-pdf-white # 保留输出目录自定义打印样式
 python scripts/review_theme.py --css themes/pure-black.css
 python scripts/audit_computed.py --css themes/pure-black.css
 ```
@@ -166,9 +167,17 @@ python scripts/audit_computed.py --css themes/pure-black.css
 
 ## CI
 
-`.github/workflows/theme-check.yml` 在每次 push 时跑一遍：静态审查 + 双媒体对比度审计 + 安装清单完整性检查。任何一项发现问题，构建直接失败。
+`.github/workflows/theme-check.yml` 在每次 push 时跑一遍：静态审查 + 双媒体对比度审计 + 安装清单完整性检查。任何一项发现问题，构建直接失败。CI 不含 Typora 自带的 `night/` 依赖，只代表部分检查；日志和任务名称会明确标出，不能替代本地完整验证。
 
 注意 `build_themes.py` **不**在 CI 里跑 —— 它需要本机 Typora 的 `night.css` 作为基座，CI 上没有。所以改配色要本地生成后提交 `themes/` 下的产物。
+
+### 完整验证与部分检查
+
+默认检查会递归验证 CSS 导入；缺少依赖或测试元素就失败。对比度检查覆盖所有匹配元素，按祖先背景逐层合成透明色，屏幕和打印文字阈值均为 4.5:1。
+
+本地可先生成到独立目录，再将本机 Typora 的 `night/` 子目录复制到该目录，运行两个检查脚本。不要提交 Typora 自带文件。仓库目录或 CI 缺少这些依赖时，只能显式加 `--allow-missing-night` 做部分检查；该选项不会放过缺失的 `pdf-white.css`。
+
+生成脚本会先验证全部变体，必要替换未命中就停止。输出目录的 `pdf-white.css` 默认同步仓库版本；有自定义修改时使用 `--keep-pdf-white`。共享字体和引用打印规则统一维护在 `themes/pdf-white.css`。
 
 ## 已知限制
 

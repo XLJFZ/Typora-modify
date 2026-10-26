@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   check:
-    name: 配色与结构检查
+    name: 部分检查（不含 Typora 内置依赖）
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,12 +48,18 @@ jobs:
             playwright install --with-deps chromium
           fi
 
+      - name: 检查范围说明
+        run: echo "::notice::PARTIAL CHECK — Typora night dependencies are unavailable on CI. Complete validation requires a local Typora installation."
+
+      - name: 回归测试
+        run: python -m unittest discover -s tests -p 'test_*.py'
+
       - name: 静态审查（结构 / @import / 命名色 / 中灰背景）
         run: |
           set -e
           for f in themes/pure-black.css themes/pure-black-soft.css themes/pure-black-soft-serif.css; do
             echo "::group::$f"
-            python scripts/review_theme.py --css "$f"
+            python scripts/review_theme.py --css "$f" --allow-missing-night
             echo "::endgroup::"
           done
 
@@ -62,7 +68,7 @@ jobs:
           set -e
           for f in themes/pure-black.css themes/pure-black-soft.css themes/pure-black-soft-serif.css; do
             echo "::group::$f"
-            python scripts/audit_computed.py --css "$f" --browser chromium
+            python scripts/audit_computed.py --css "$f" --browser chromium --allow-missing-night
             echo "::endgroup::"
           done
 
